@@ -43,6 +43,16 @@ namespace System.Collections.Concurrent
             EnqueueItem(item);
         }
 
+#if !NETFRAMEWORK && (NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
+        public new void Clear()
+        {
+            base.Clear();
+
+            // Raise event added event
+            this.OnContentChanged(
+                new NotifyConcurrentQueueChangedEventArgs<T>(NotifyConcurrentQueueChangedAction.Empty));
+        }
+#endif
 
         /// <summary>
         /// Attempts to remove and return the object at the beginning of the
